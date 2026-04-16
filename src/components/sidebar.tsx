@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { LinkType } from "@/lib/types";
 
 type Filter = "all" | LinkType;
@@ -10,6 +11,18 @@ const items: { key: Filter; label: string; icon: string }[] = [
   { key: "video", label: "Videos", icon: "\u25B6\uFE0F" },
   { key: "podcast", label: "Podcasts", icon: "\uD83C\uDFA7" },
 ];
+
+function SettingsButton() {
+  const router = useRouter();
+  return (
+    <button
+      onClick={() => router.push("/settings")}
+      className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-subtle hover:bg-background rounded-lg transition"
+    >
+      {"\u2699\uFE0F"} Settings
+    </button>
+  );
+}
 
 export function Sidebar({
   filter,
@@ -41,12 +54,12 @@ export function Sidebar({
           </button>
         ))}
       </nav>
-      <div className="border-t border-border p-3">
+      <div className="border-t border-border p-3 space-y-0.5">
+        <SettingsButton />
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-subtle hover:bg-background rounded-lg transition"
         >
-          <span>{"\u2699\uFE0F"}</span>
           Sign Out
         </button>
       </div>

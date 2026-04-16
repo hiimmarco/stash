@@ -51,9 +51,15 @@ export default function HomePage() {
       <main className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
         <header className="bg-card border-b border-border px-5 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-semibold tracking-tight md:hidden">
-            Stash
-          </h1>
+          <div className="flex items-center gap-3 md:hidden">
+            <h1 className="text-xl font-semibold tracking-tight">Stash</h1>
+            <button
+              onClick={() => router.push("/settings")}
+              className="text-base opacity-60 hover:opacity-100 transition"
+            >
+              {"\u2699\uFE0F"}
+            </button>
+          </div>
           <h2 className="text-xl font-semibold tracking-tight hidden md:block">
             {filter === "all"
               ? "All Links"
