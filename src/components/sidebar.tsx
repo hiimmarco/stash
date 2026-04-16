@@ -54,11 +54,11 @@ export function Sidebar({
           </button>
         ))}
       </nav>
-      <div className="border-t border-border p-3 space-y-0.5">
+      <div className="border-t border-border p-3 space-y-1">
         <SettingsButton />
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-subtle hover:bg-background rounded-lg transition"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-red-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
         >
           Sign Out
         </button>
