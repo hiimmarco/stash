@@ -148,18 +148,10 @@ export default function SettingsPage() {
             </div>
             <div>
               <p className="font-medium mb-1">
-                2. Add &quot;Get URLs from Input&quot; action
+                2. Add &quot;Get Contents of URL&quot; action
               </p>
-              <p className="text-xs text-muted">
-                Set input to &quot;Shortcut Input&quot;
-              </p>
-            </div>
-            <div>
-              <p className="font-medium mb-1">
-                3. Add &quot;Get Contents of URL&quot; action
-              </p>
-              <p className="text-xs text-muted">Configure it as:</p>
-              <ul className="text-xs text-muted mt-1 ml-4 list-disc space-y-1">
+              <p className="text-xs text-muted mb-2">Tap &quot;Show More&quot; to expand all fields and configure:</p>
+              <ul className="text-xs text-muted ml-4 list-disc space-y-2">
                 <li>
                   URL:{" "}
                   <code className="bg-background px-1.5 py-0.5 rounded">
@@ -168,38 +160,35 @@ export default function SettingsPage() {
                 </li>
                 <li>Method: <strong>POST</strong></li>
                 <li>
-                  Header:{" "}
-                  <code className="bg-background px-1.5 py-0.5 rounded">
-                    Authorization: Bearer YOUR_API_KEY
-                  </code>
+                  Header 1 — Name:{" "}
+                  <code className="bg-background px-1.5 py-0.5 rounded">Authorization</code>
+                  {" "}Value:{" "}
+                  <code className="bg-background px-1.5 py-0.5 rounded">Bearer YOUR_API_KEY</code>
                 </li>
                 <li>
-                  Header:{" "}
-                  <code className="bg-background px-1.5 py-0.5 rounded">
-                    Content-Type: application/json
-                  </code>
+                  Header 2 — Name:{" "}
+                  <code className="bg-background px-1.5 py-0.5 rounded">Content-Type</code>
+                  {" "}Value:{" "}
+                  <code className="bg-background px-1.5 py-0.5 rounded">application/json</code>
                 </li>
                 <li>
-                  Request Body (JSON):{" "}
-                  <code className="bg-background px-1.5 py-0.5 rounded">
-                    {`{"url": "URLs from Input"}`}
-                  </code>
+                  Request Body: select <strong>JSON</strong> → add key{" "}
+                  <code className="bg-background px-1.5 py-0.5 rounded">url</code>{" "}
+                  → tap the value field → tap the variable icon → select{" "}
+                  <strong>Shortcut Input</strong>
                 </li>
               </ul>
             </div>
             <div>
-              <p className="font-medium mb-1">4. Enable Share Sheet</p>
+              <p className="font-medium mb-1">3. Enable Share Sheet</p>
               <p className="text-xs text-muted">
-                Tap the shortcut name at top &rarr; tap (i) &rarr; enable
-                &quot;Show in Share Sheet&quot; &rarr; select &quot;URLs&quot; as
-                input type
+                Tap the shortcut name at the top → rename to <strong>&quot;Save to Stash&quot;</strong> → tap the name again → find <strong>&quot;Add to Share Sheet&quot;</strong> and turn it on → set input type to <strong>URLs</strong>
               </p>
             </div>
             <div>
-              <p className="font-medium mb-1">5. Name it &quot;Save to Stash&quot;</p>
+              <p className="font-medium mb-1">4. Done</p>
               <p className="text-xs text-muted">
-                Now share any link from Safari, YouTube, or Spotify and tap
-                &quot;Save to Stash&quot;
+                Share any link from Safari, YouTube, or Spotify → tap <strong>&quot;Save to Stash&quot;</strong>. The link saves instantly and metadata loads in the background.
               </p>
             </div>
           </div>
