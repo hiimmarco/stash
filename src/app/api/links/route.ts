@@ -1,8 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { detectLinkInfo } from "@/lib/detect";
+import { isDemoMode, demoGetLinks, demoAddLink } from "@/lib/demo-store";
 
 export async function GET() {
+  if (isDemoMode()) {
+    return NextResponse.json(demoGetLinks());
+  }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,14 +23,19 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const body = await request.json();
   const { url, title, description, thumbnail_url } = body;
 
   if (!url) return NextResponse.json({ error: "URL is required" }, { status: 400 });
+
+  if (isDemoMode()) {
+    const link = demoAddLink({ url, title, description, thumbnail_url });
+    return NextResponse.json(link, { status: 201 });
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const detected = detectLinkInfo(url);
 
