@@ -31,6 +31,7 @@ export function demoAddLink(input: {
     type: detected.type,
     domain: detected.domain,
     platform: detected.platform,
+    is_archived: false,
     created_at: new Date().toISOString(),
   };
   links.push(link);
@@ -41,5 +42,12 @@ export function demoDeleteLink(id: string): boolean {
   const idx = links.findIndex((l) => l.id === id);
   if (idx === -1) return false;
   links.splice(idx, 1);
+  return true;
+}
+
+export function demoArchiveLink(id: string, is_archived: boolean): boolean {
+  const link = links.find((l) => l.id === id);
+  if (!link) return false;
+  link.is_archived = is_archived;
   return true;
 }

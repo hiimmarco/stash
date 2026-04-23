@@ -3,9 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { detectLinkInfo } from "@/lib/detect";
 import { isDemoMode, demoGetLinks, demoAddLink } from "@/lib/demo-store";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const archived = request.nextUrl.searchParams.get("archived") === "true";
+
   if (isDemoMode()) {
-    return NextResponse.json(demoGetLinks());
+    const links = demoGetLinks().filter((l) => l.is_archived === archived);
+    return NextResponse.json(links);
   }
 
   const supabase = await createClient();
@@ -16,6 +19,7 @@ export async function GET() {
     .from("links")
     .select("*")
     .eq("user_id", user.id)
+    .eq("is_archived", archived)
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -50,6 +54,7 @@ export async function POST(request: NextRequest) {
       type: detected.type,
       domain: detected.domain,
       platform: detected.platform,
+      is_archived: false,
     })
     .select()
     .single();

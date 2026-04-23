@@ -10,5 +10,6 @@ export interface Link {
   type: LinkType;
   domain: string;
   platform: string;
+  is_archived: boolean;
   created_at: string;
 }

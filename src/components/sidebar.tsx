@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation";
 import type { LinkType } from "@/lib/types";
 
-type Filter = "all" | LinkType;
+export type Filter = "all" | LinkType | "archived";
 
 const items: { key: Filter; label: string; icon: string }[] = [
   { key: "all", label: "All Links", icon: "\uD83D\uDD17" },
   { key: "article", label: "Articles", icon: "\uD83D\uDCC4" },
   { key: "video", label: "Videos", icon: "\u25B6\uFE0F" },
   { key: "podcast", label: "Podcasts", icon: "\uD83C\uDFA7" },
+  { key: "archived", label: "Archive", icon: "\uD83D\uDDC4\uFE0F" },
 ];
 
 function SettingsButton() {
