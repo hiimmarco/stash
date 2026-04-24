@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Save to Stash — Settings</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #0a0a0a;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --card: #f9fafb;
+        --accent: #0a0a0a;
+        --accent-fg: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0a0a0a;
+          --fg: #fafafa;
+          --muted: #9ca3af;
+          --border: #27272a;
+          --card: #111111;
+          --accent: #fafafa;
+          --accent-fg: #0a0a0a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+      }
+      .wrap {
+        width: 100%;
+        max-width: 440px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 4px;
+        letter-spacing: -0.01em;
+      }
+      p.sub {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0 0 24px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 16px 0 6px;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--fg);
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--muted);
+      }
+      small {
+        color: var(--muted);
+        font-size: 11px;
+        display: block;
+        margin-top: 4px;
+      }
+      button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        background: var(--accent);
+        color: var(--accent-fg);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .status {
+        margin-top: 12px;
+        font-size: 12px;
+        text-align: center;
+        min-height: 16px;
+      }
+      .ok {
+        color: #16a34a;
+      }
+      .err {
+        color: #b00020;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Save to Stash</h1>
+      <p class="sub">Configure your API endpoint and key.</p>
+
+      <label for="baseUrl">Base URL</label>
+      <input
+        type="text"
+        id="baseUrl"
+        placeholder="https://stash-alpha-five.vercel.app"
+      />
+      <small>Your Stash deployment URL (no trailing slash).</small>
+
+      <label for="apiKey">API Key</label>
+      <input
+        type="password"
+        id="apiKey"
+        placeholder="stash_…"
+        autocomplete="off"
+      />
+      <small>Generate one in Stash → Settings → API Keys.</small>
+
+      <button id="save">Save</button>
+      <button id="test" style="background: transparent; color: var(--fg); border: 1px solid var(--border); margin-top: 8px;">
+        Test connection
+      </button>
+      <div id="status" class="status"></div>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>
