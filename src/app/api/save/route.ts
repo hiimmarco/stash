@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { validateApiKey } from "@/lib/api-key-auth";
@@ -50,9 +51,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Enrich with metadata in the background (won't block the response)
   if (data?.id) {
-    enrichMetadata(data.id, url, supabase).catch(() => null);
+    after(enrichMetadata(data.id, url, supabase).catch(() => null));
   }
 
   return NextResponse.json({ success: true, link: data }, { status: 201 });
