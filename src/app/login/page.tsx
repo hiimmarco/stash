@@ -1,59 +1,178 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+type Mode = "signin" | "signup" | "reset";
 
-  async function handleLogin(e: React.FormEvent) {
+export default function LoginPage() {
+  const router = useRouter();
+  const [mode, setMode] = useState<Mode>("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    setInfo(null);
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+
+    if (mode === "signin") {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      setLoading(false);
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      router.push("/");
+      router.refresh();
+      return;
+    }
+
+    if (mode === "signup") {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      setLoading(false);
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      // If email confirmation is disabled, a session is returned immediately.
+      if (data.session) {
+        router.push("/");
+        router.refresh();
+        return;
+      }
+      setInfo("Check your email to confirm your account.");
+      return;
+    }
+
+    // reset
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/settings`,
     });
     setLoading(false);
-    if (!error) setSent(true);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setInfo("Check your email for a password reset link.");
   }
+
+  const title =
+    mode === "signin"
+      ? "Sign in"
+      : mode === "signup"
+      ? "Create account"
+      : "Reset password";
 
   return (
     <div className="flex-1 flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold tracking-tight mb-1">Stash</h1>
-        <p className="text-muted text-sm mb-8">
-          Save links to articles, videos, and podcasts.
-        </p>
+        <p className="text-muted text-sm mb-8">{title}</p>
 
-        {sent ? (
-          <div className="bg-card rounded-2xl border border-border p-6 text-center">
-            <p className="text-sm font-medium mb-1">Check your email</p>
-            <p className="text-xs text-muted">
-              We sent a magic link to <strong>{email}</strong>
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleLogin} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-muted transition"
+          />
+          {mode !== "reset" && (
             <input
-              type="email"
+              type="password"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              minLength={6}
+              autoComplete={
+                mode === "signin" ? "current-password" : "new-password"
+              }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
               className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm outline-none focus:border-muted transition"
             />
+          )}
+
+          {error && (
+            <p className="text-xs text-red-500 px-1">{error}</p>
+          )}
+          {info && (
+            <p className="text-xs text-muted px-1">{info}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full px-4 py-3 rounded-xl bg-foreground text-card text-sm font-semibold disabled:opacity-50 transition"
+          >
+            {loading
+              ? "Working…"
+              : mode === "signin"
+              ? "Sign in"
+              : mode === "signup"
+              ? "Create account"
+              : "Send reset link"}
+          </button>
+        </form>
+
+        <div className="mt-6 flex flex-col gap-2 text-xs text-muted text-center">
+          {mode === "signin" && (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setError(null);
+                  setInfo(null);
+                }}
+                className="hover:text-foreground transition"
+              >
+                Don&apos;t have an account? Create one
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("reset");
+                  setError(null);
+                  setInfo(null);
+                }}
+                className="hover:text-foreground transition"
+              >
+                Forgot password?
+              </button>
+            </>
+          )}
+          {mode !== "signin" && (
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-4 py-3 rounded-xl bg-foreground text-card text-sm font-semibold disabled:opacity-50 transition"
+              type="button"
+              onClick={() => {
+                setMode("signin");
+                setError(null);
+                setInfo(null);
+              }}
+              className="hover:text-foreground transition"
             >
-              {loading ? "Sending..." : "Continue with Email"}
+              Back to sign in
             </button>
-          </form>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

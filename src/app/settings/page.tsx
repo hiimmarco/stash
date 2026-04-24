@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 interface ApiKey {
   id: string;
@@ -15,7 +16,25 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pwMessage, setPwMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const router = useRouter();
+
+  async function updatePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPwLoading(true);
+    setPwMessage(null);
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setPwLoading(false);
+    if (error) {
+      setPwMessage({ type: "error", text: error.message });
+      return;
+    }
+    setNewPassword("");
+    setPwMessage({ type: "ok", text: "Password updated." });
+  }
 
   async function fetchKeys() {
     const res = await fetch("/api/keys");
@@ -64,6 +83,47 @@ export default function SettingsPage() {
       </header>
 
       <div className="max-w-lg mx-auto p-6 space-y-8">
+        {/* Password Section */}
+        <section>
+          <h2 className="text-base font-semibold tracking-tight mb-1">
+            Password
+          </h2>
+          <p className="text-xs text-muted mb-4">
+            Set or change your account password.
+          </p>
+          <form
+            onSubmit={updatePassword}
+            className="bg-card border border-border rounded-2xl p-5 space-y-3"
+          >
+            <input
+              type="password"
+              required
+              minLength={6}
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="New password"
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm outline-none focus:border-muted transition"
+            />
+            {pwMessage && (
+              <p
+                className={`text-xs px-1 ${
+                  pwMessage.type === "error" ? "text-red-500" : "text-muted"
+                }`}
+              >
+                {pwMessage.text}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={pwLoading}
+              className="w-full px-4 py-2.5 rounded-xl bg-foreground text-card text-sm font-semibold disabled:opacity-50"
+            >
+              {pwLoading ? "Saving…" : "Update password"}
+            </button>
+          </form>
+        </section>
+
         {/* API Keys Section */}
         <section>
           <h2 className="text-base font-semibold tracking-tight mb-1">
